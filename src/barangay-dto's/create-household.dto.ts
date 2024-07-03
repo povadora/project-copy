@@ -7,13 +7,13 @@ import {
 } from 'class-validator';
 
 export class CreateHouseholdDto {
-  @IsNotEmpty()
-  @IsString()
-  householdNumber: string;
-
   @IsOptional()
   @IsString()
   householdPhoto: string;
+
+  @IsNotEmpty()
+  @IsString()
+  householdNumber: string;
 
   @IsNotEmpty()
   @IsString()

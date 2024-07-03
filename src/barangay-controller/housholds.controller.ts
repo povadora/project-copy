@@ -60,11 +60,27 @@ export class HouseholdController {
   }
 
   @Patch('update-household/:id')
+  @UseInterceptors(
+    FileInterceptor('householdPhoto', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(
+            null,
+            `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`,
+          );
+        },
+      }),
+    }),
+  )
   updateHousehold(
     @Param('id') id: string,
     @Body() updateHouseholdDto: UpdateHouseholdDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.householdService.updateHousehold(+id, updateHouseholdDto);
+    return this.householdService.updateHousehold(+id, updateHouseholdDto, file);
   }
 
   @Delete('delete-household/:id')

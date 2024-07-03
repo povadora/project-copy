@@ -12,69 +12,70 @@ export class HouseholdsService {
     private readonly householdRepository: Repository<Household>,
   ) {}
 
+  // async createHousehold(
+  //   createHouseholdDto: CreateHouseholdDto,
+  //   file: Express.Multer.File,
+  // ): Promise<Household> {
+  //   const {
+  //     householdNumber,
+  //     householdName,
+  //     streetName,
+  //     subdivision,
+  //     zone,
+  //     sitio,
+  //     purok,
+  //     barangay,
+  //     municipality,
+  //     province,
+  //     structureMaterials,
+  //     numberOfRooms,
+  //     numberOfToilets,
+  //     allowBoarders,
+  //     hasRentalPermit,
+  //     hasBackyardGarden,
+  //     otherIncomeSource,
+  //     numberOfPets,
+  //     numberOfTwoWheeledVehicles,
+  //     numberOfThreeWheeledVehicles,
+  //     numberOfFourWheeledVehicles,
+  //   } = createHouseholdDto;
+
+  //   const newHousehold = this.householdRepository.create({
+  //     householdNumber,
+  //     householdPhoto: file.path, // ma save ang file path sa databaase
+  //     householdName,
+  //     streetName,
+  //     subdivision,
+  //     zone,
+  //     sitio,
+  //     purok,
+  //     barangay,
+  //     municipality,
+  //     province,
+  //     structureMaterials,
+  //     numberOfRooms,
+  //     numberOfToilets,
+  //     allowBoarders,
+  //     hasRentalPermit,
+  //     hasBackyardGarden,
+  //     otherIncomeSource,
+  //     numberOfPets,
+  //     numberOfTwoWheeledVehicles,
+  //     numberOfThreeWheeledVehicles,
+  //     numberOfFourWheeledVehicles,
+  //   });
+  //   return await this.householdRepository.save(newHousehold);
+  // }
+  //    or **** nag trial rako sa babaw
+
   async createHousehold(
     createHouseholdDto: CreateHouseholdDto,
     file: Express.Multer.File,
   ): Promise<Household> {
-    const {
-      householdNumber,
-      householdName,
-      streetName,
-      subdivision,
-      zone,
-      sitio,
-      purok,
-      barangay,
-      municipality,
-      province,
-      structureMaterials,
-      numberOfRooms,
-      numberOfToilets,
-      allowBoarders,
-      hasRentalPermit,
-      hasBackyardGarden,
-      otherIncomeSource,
-      numberOfPets,
-      numberOfTwoWheeledVehicles,
-      numberOfThreeWheeledVehicles,
-      numberOfFourWheeledVehicles,
-    } = createHouseholdDto;
-
-    const newHousehold = this.householdRepository.create({
-      householdNumber,
-      householdPhoto: file.path, // ma save ang file path sa databaase
-      householdName,
-      streetName,
-      subdivision,
-      zone,
-      sitio,
-      purok,
-      barangay,
-      municipality,
-      province,
-      structureMaterials,
-      numberOfRooms,
-      numberOfToilets,
-      allowBoarders,
-      hasRentalPermit,
-      hasBackyardGarden,
-      otherIncomeSource,
-      numberOfPets,
-      numberOfTwoWheeledVehicles,
-      numberOfThreeWheeledVehicles,
-      numberOfFourWheeledVehicles,
-    });
-
-    return await this.householdRepository.save(newHousehold);
+    const newHousehold = this.householdRepository.create(createHouseholdDto);
+    newHousehold.householdPhoto = file.path; // ma save ang file path sa database
+    return this.householdRepository.save(newHousehold);
   }
-
-  //    or **** nag trial rako sa babaw
-
-  //   async create(createHouseholdDto: CreateHouseholdDto, file: Express.Multer.File): Promise<Household> {
-  //     const newHousehold = this.householdRepository.create(createHouseholdDto);
-  //     newHousehold.household_photo = file.path; // ma save ang file path sa database
-  //     return this.householdRepository.save(newHousehold);
-  //   }
 
   async findAllHousehold(): Promise<Household[]> {
     return await this.householdRepository.find();
@@ -91,14 +92,21 @@ export class HouseholdsService {
   async updateHousehold(
     id: number,
     updateHouseholdDto: UpdateHouseholdDto,
+    file?: Express.Multer.File,
   ): Promise<Household> {
     const household = await this.householdRepository.preload({
       householdId: id,
       ...updateHouseholdDto,
     });
+
     if (!household) {
-      throw new NotFoundException(`Account with ID ${id} not found`);
+      throw new NotFoundException(`Household with ID ${id} not found`);
     }
+
+    if (file) {
+      household.householdPhoto = file.path; // Update the file path if a new file is uploaded
+    }
+
     return this.householdRepository.save(household);
   }
 

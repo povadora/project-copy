@@ -6,16 +6,15 @@ export class Household {
   @PrimaryGeneratedColumn({ name: 'household_id' })
   householdId: number;
 
-  @Column({ name: 'household_number', type: 'varchar' })
-  householdNumber: string;
-
   @Column({
     name: 'household_photo',
     type: 'varchar',
-
     nullable: true,
   })
   householdPhoto: string;
+
+  @Column({ name: 'household_number', type: 'varchar' })
+  householdNumber: string;
 
   @Column({ name: 'household_name', type: 'varchar' })
   householdName: string;
@@ -23,7 +22,6 @@ export class Household {
   @Column({
     name: 'steet_name',
     type: 'varchar',
-
     nullable: true,
   })
   streetName: string;
@@ -52,7 +50,6 @@ export class Household {
   @Column({
     name: 'structure_materials',
     type: 'varchar',
-
     nullable: true,
   })
   structureMaterials: string;
@@ -75,7 +72,6 @@ export class Household {
   @Column({
     name: 'other_income_source',
     type: 'varchar',
-
     nullable: true,
   })
   otherIncomeSource: string;
